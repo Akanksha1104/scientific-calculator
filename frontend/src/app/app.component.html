@@ -1,0 +1,47 @@
+<main class="layout">
+  <section class="calculator">
+    <header class="title">
+      <h1>Scientific Calculator</h1>
+      <button type="button" class="mode" (click)="toggleAngleMode()"
+              [title]="'Angle unit: ' + (angleMode === 'DEG' ? 'degrees' : 'radians') + ' (click to switch)'">
+        <span [class.active]="angleMode === 'DEG'">DEG</span>
+        <span [class.active]="angleMode === 'RAD'">RAD</span>
+      </button>
+    </header>
+
+    <div class="screen" [class.busy]="loading">
+      <div class="previous">{{ previous }}</div>
+      <div class="main-line">{{ mainLine }}</div>
+    </div>
+
+    <div class="error" [class.visible]="!!error">{{ error }}</div>
+
+    <div class="keys">
+      @for (key of keys; track key.label) {
+        <button type="button" [class]="key.kind" [title]="key.title ?? key.label" (click)="press(key)">
+          {{ key.label }}
+        </button>
+      }
+    </div>
+  </section>
+
+  <section class="history">
+    <div class="history-header">
+      <h2>History</h2>
+      <button type="button" class="link" (click)="clearHistory()" [disabled]="!history.length">Clear</button>
+    </div>
+    @if (history.length) {
+      <ul>
+        @for (item of history; track item.timestamp) {
+          <li (click)="reuse(item)" title="Click to edit this expression again">
+            <span class="expr">{{ item.expression }}</span>
+            <span class="res">= {{ formatNumber(item.result) }}</span>
+            <span class="tag">{{ item.angleMode }}</span>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="empty">No calculations yet.</p>
+    }
+  </section>
+</main>
